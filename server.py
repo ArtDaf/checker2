@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import ConfigParser
 from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +14,7 @@ db = SQLAlchemy(app)
 
 class File(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    display_name = db.Column(db.String(256), unique=False)
+    name = db.Column(db.String(256), unique=False)
     url = db.Column(db.String(512), unique=False)
     hash = db.Column(db.String(36), unique=False)
     date = db.Column(db.DateTime)
@@ -21,13 +22,16 @@ class File(db.Model):
     category = db.relationship('Category',
                 backref=db.backref('files', lazy='dynamic'))
 
-    def __init__(self, display_name, url, hash, category, date=None):
-        self.display_name = display_name
+    def __init__(self, name, url, hash, category, date=None):
+        self.name = name
         self.url = url
         self.hash = hash
         if date is None:
             date = datetime.utcnow()
         self.category = category
+
+    def __repr__(self):
+        return '<File %d %r>' % (self.id, self._name)
 
 
 class Category(db.Model):
@@ -39,6 +43,28 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category %r>' % self.name
+
+
+class EventType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+    def __init__(self, name):
+        self.name  = name
+
+    def __repr__(self):
+        return '<EventType %r>' % self.name
+
+
+class ResultType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<ResultType %r>' % self.name
 
 
 @app.route('/')
