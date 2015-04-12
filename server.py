@@ -52,7 +52,10 @@ class Event(db.Model):
     resulttype_id = db.Column(db.Integer, db.ForeignKey('resulttype.id'))
     resulttype = db.relationship('ResultType', backref=db.backref('results', lazy='dynamic'))
 
-    def __init__(self, date=None):
+    def __init__(self, eventtype, resulttype, date=None):
+
+        self.eventtype = eventtype
+        self.resulttype = resulttype
 
         if date is None:
             date = datetime.utcnow()
