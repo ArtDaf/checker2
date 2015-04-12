@@ -19,8 +19,7 @@ class File(db.Model):
     hash = db.Column(db.String(36), unique=False)
     date = db.Column(db.DateTime)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
-    category = db.relationship('Category',
-                backref=db.backref('files', lazy='dynamic'))
+    category = db.relationship('Category', backref=db.backref('files', lazy='dynamic'))
 
     def __init__(self, name, url, hash, category, date=None):
         self.name = name
@@ -45,12 +44,26 @@ class Category(db.Model):
         return '<Category %r>' % self.name
 
 
+class Event(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    eventtype_id = db.Column(db.Integer, db.ForeignKey('eventtype.id'))
+    eventtype = db.relationship('EventType', backref=db.backref('events', lazy='dynamic'))
+    resulttype_id = db.Column(db.Integer, db.ForeignKey('resulttype.id'))
+    resulttype = db.relationship('ResultType', backref=db.backref('results', lazy='dynamic'))
+
+    def __init__(self, date=None):
+
+        if date is None:
+            date = datetime.utcnow()
+
+
 class EventType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
     def __init__(self, name):
-        self.name  = name
+        self.name = name
 
     def __repr__(self):
         return '<EventType %r>' % self.name
