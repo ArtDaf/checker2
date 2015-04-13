@@ -1,17 +1,10 @@
- <!doctype html>
-<title>Url checker</title>
-<h1>Url checker</h1>
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
+<!doctype html>
+<title>Url Checker</title>
+<h1>Url Checker</h1>
+{%- for category, message in get_flashed_messages(with_categories=true) %}
+  <p class="flask {{ category }}-flash">{{
+    "Error: " if category == 'error' }}{{ message }}</p>
+{%- endfor %}
 {% block body %}{% endblock %}
 <hr>
-<address>Url checker</address>
+<address>Url Checker</address>

@@ -3,12 +3,15 @@
 
 import ConfigParser
 from datetime import datetime
-from flask import Flask, render_template, flash, request, redirect, url_for, session, abort
+from flask import Flask, render_template, flash, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_ECHO '] = False
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'ololo!'
 db = SQLAlchemy(app)
 
 
@@ -105,17 +108,14 @@ def all_event_types():
 def new_event_type():
     if request.method == 'POST':
         if not request.form['name']:
-            #flash('Name is required', 'error')
-            pass
+            flash('Name is required', 'error')
         else:
-            pass
             # TODO: strin tags, etc. || re.sub('<[^<]+?>', '', text)
             name = request.form['name']
             event_type = EventType(name)
-            print event_type
             db.session.add(event_type)
             db.session.commit()
-            #flash('Created!')
+            flash('New event created')
             return redirect(url_for('all_event_types'))
     return render_template('new_evt_type.html')
 
