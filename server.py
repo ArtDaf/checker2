@@ -28,6 +28,7 @@ class File(db.Model):
         if date is None:
             date = datetime.utcnow()
         self.category = category
+        self.date = date
 
     def __repr__(self):
         return '<File %d %r>' % (self.id, self._name)
@@ -44,24 +45,8 @@ class Category(db.Model):
         return '<Category %r>' % self.name
 
 
-class Event(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime)
-    eventtype_id = db.Column(db.Integer, db.ForeignKey('eventtype.id'))
-    eventtype = db.relationship('EventType', backref=db.backref('events', lazy='dynamic'))
-    resulttype_id = db.Column(db.Integer, db.ForeignKey('resulttype.id'))
-    resulttype = db.relationship('ResultType', backref=db.backref('results', lazy='dynamic'))
-
-    def __init__(self, eventtype, resulttype, date=None):
-
-        self.eventtype = eventtype
-        self.resulttype = resulttype
-
-        if date is None:
-            date = datetime.utcnow()
-
-
 class EventType(db.Model):
+    __tablename__ = 'event_type'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
@@ -73,6 +58,7 @@ class EventType(db.Model):
 
 
 class ResultType(db.Model):
+    __tablename__ = 'result_type'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
@@ -81,6 +67,27 @@ class ResultType(db.Model):
 
     def __repr__(self):
         return '<ResultType %r>' % self.name
+
+
+class Event(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
+    event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
+    event_type = db.relationship('EventType', backref=db.backref('events', lazy='dynamic'))
+    result_type_id = db.Column(db.Integer, db.ForeignKey('result_type.id'))
+    result_type = db.relationship('ResultType', backref=db.backref('events', lazy='dynamic'))
+
+    def __init__(self, event_type, result_type, date=None):
+
+        self.event_type = event_type
+        self.result_type = result_type
+
+        if date is None:
+            date = datetime.utcnow()
+        self.date = date
+
+    def __repr__(self):
+        return '<Event %d>' % (self.id)
 
 
 @app.route('/')
