@@ -105,15 +105,17 @@ def all_event_types():
 def new_event_type():
     if request.method == 'POST':
         if not request.form['name']:
-            flash('Name is required', 'error')
+            #flash('Name is required', 'error')
+            pass
         else:
+            pass
             # TODO: strin tags, etc. || re.sub('<[^<]+?>', '', text)
             name = request.form['name']
-            event_type = EventType(unicode(name, 'utf-8'))
+            event_type = EventType(name)
+            print event_type
             db.session.add(event_type)
             db.session.commit()
-
-            flash(u'Event Type was successfully created')
+            #flash('Created!')
             return redirect(url_for('all_event_types'))
     return render_template('new_evt_type.html')
 

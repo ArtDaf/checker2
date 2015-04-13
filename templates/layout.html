@@ -1,6 +1,17 @@
  <!doctype html>
 <title>Url checker</title>
 <h1>Url checker</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 {% block body %}{% endblock %}
 <hr>
 <address>Url checker</address>
