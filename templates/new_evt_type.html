@@ -1,0 +1,17 @@
+{% extends "layout.html "%}
+
+{% block body %}
+<h2>New event type</h2>
+
+<form action="" method="post">
+
+    <p>
+    Name:
+    <input type="text" name="name" value="{{ request.form.name }}">
+    <input type="submit" value="Create event type">
+    <a href="{{ url_for('all_event_types') }}"> Back the list </a>
+
+
+</form>
+
+{% endblock %}

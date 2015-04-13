@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Event Types</h2>
+  <form action="" method=post>
+    <table class=event_types>
+      <tr>
+        <th>#
+        <th>Title
+        <th>name
+      {%- for et in event_types %}
+      <tr class=title>
+        <td>{{ et.id }}
+        <td>{{ et.name }}
+      {%- endfor %}
+    </table>
+    <p>
+      <input type=submit value="Update">
+      <a href="{{ url_for('new_event_type') }}">New item</a>
+  </form>
+{% endblock %}

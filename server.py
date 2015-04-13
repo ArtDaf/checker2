@@ -3,7 +3,7 @@
 
 import ConfigParser
 from datetime import datetime
-from flask import Flask
+from flask import Flask, render_template, flash, request, redirect, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -93,6 +93,30 @@ class Event(db.Model):
 @app.route('/')
 def hello():
     return 'Index page'
+
+
+@app.route('/et')
+def all_event_types():
+    return render_template('all_evt_types.html',
+                           event_types=EventType.query.all())
+
+
+@app.route('/newet', methods=['GET', 'POST'])
+def new_event_type():
+    if request.method == 'POST':
+        if not request.form['name']:
+            flash('Name is required', 'error')
+        else:
+            # TODO: strin tags, etc. || re.sub('<[^<]+?>', '', text)
+            name = request.form['name']
+            event_type = EventType(unicode(name, 'utf-8'))
+            db.session.add(event_type)
+            db.session.commit()
+
+            flash(u'Event Type was successfully created')
+            return redirect(url_for('all_event_types'))
+    return render_template('new_evt_type.html')
+
 
 
 if __name__ == '__main__':
