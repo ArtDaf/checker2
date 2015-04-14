@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h2>{{mode}} Cats! </h2>
+
+<form method="POST" action="{{url_for('cats_new')}}" class="add-cat">
+
+
+      <dl>
+          <dt>{{ form.name.label }}:
+          <dd>{{ form.name }}
+
+        <dd>{{ form.submit }}
+      </dl>
+
+</form>
+
+<ul class="cats">
+
+{% for cat in cats %}
+<li> {{ cat.name }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

@@ -4,6 +4,10 @@
 import ConfigParser
 from datetime import datetime
 from flask import Flask, render_template, flash, request, redirect, url_for, abort
+from wtforms import Form, StringField, SubmitField
+#from wtforms.fields.html5 import URLField
+#from wtforms.validators import url
+
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -15,6 +19,11 @@ db = SQLAlchemy(app)
 def get_or_abort(model, object_id, code=404):
     result = model.query.get(object_id)
     return result or abort(code)
+
+
+class CategotyForm(Form):
+    name = StringField('Name')
+    submit = SubmitField('Share')
 
 
 class File(db.Model):
@@ -43,10 +52,11 @@ class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=False)
 
-    def __init__(self, name):
-        self.name = name
+    #def __init__(self, name):
+    #    self.name = name
 
     def __repr__(self):
+
         return '<Category %r>' % self.name
 
 
@@ -98,6 +108,27 @@ class Event(db.Model):
 @app.route('/')
 def index():
     return render_template("index.html")
+
+
+@app.route('/cats')
+def cats_all():
+    cats = Category.query.all()
+    form = CategotyForm()
+    return render_template('cats_all.html', cats=cats, form=form)
+
+
+
+@app.route('/cats/new', methods=['POST'])
+def cats_new():
+    if request.method == 'POST':
+        form = CategotyForm()
+        if form.validate():
+            cat = Category()
+            form.populate_obj(cat)
+            db.session.add(cat)
+            db.session.commit()
+        return redirect(url_for('cats_all'))
+
 
 
 @app.route('/event-types')
