@@ -3,16 +3,18 @@
 
 import ConfigParser
 from datetime import datetime
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, flash, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_ECHO '] = False
-app.config['DEBUG'] = True
-app.config['SECRET_KEY'] = 'ololo!'
+app.config.from_pyfile('server.cfg')
 db = SQLAlchemy(app)
+
+
+def get_or_abort(model, object_id, code=404):
+    result = model.query.get(object_id)
+    return result or abort(code)
 
 
 class File(db.Model):
@@ -94,18 +96,18 @@ class Event(db.Model):
 
 
 @app.route('/')
-def hello():
-    return 'Index page'
+def index():
+    return render_template("index.html")
 
 
-@app.route('/et')
-def all_event_types():
-    return render_template('all_evt_types.html',
+@app.route('/event-types')
+def event_types_all():
+    return render_template('event_types_all.html',
                            event_types=EventType.query.all())
 
 
-@app.route('/newet', methods=['GET', 'POST'])
-def new_event_type():
+@app.route('/event-types/new', methods=['GET', 'POST'])
+def event_types_new():
     if request.method == 'POST':
         if not request.form['name']:
             flash('Name is required', 'error')
@@ -116,9 +118,24 @@ def new_event_type():
             db.session.add(event_type)
             db.session.commit()
             flash('New event created')
-            return redirect(url_for('all_event_types'))
-    return render_template('new_evt_type.html')
+            return redirect(url_for('event_types_all'))
+    return render_template('event_types_new.html', mode='New')
 
+
+@app.route('/event-types/edit/<int:evt_id>', methods=['GET', 'POST'])
+def event_types_edit(evt_id):
+    if request.method == 'POST':
+        event_type = get_or_abort(EventType, evt_id)
+        name = request.form['name']
+        event_type.name = name
+        db.session.add(event_type)
+        db.session.commit()
+    else:
+        event_type = get_or_abort(EventType, evt_id)
+        request.form.name = event_type.name
+        return render_template('event_types_new.html', mode="Edit")
+
+    return redirect(url_for('event_types_all'))
 
 
 if __name__ == '__main__':

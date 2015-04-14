@@ -5,16 +5,14 @@
     <table class=event_types>
       <tr>
         <th>#
-        <th>Title
         <th>name
       {%- for et in event_types %}
       <tr class=title>
-        <td>{{ et.id }}
+        <td><a href="/event-types/edit/{{et.id}}">{{ et.id }}</a>
         <td>{{ et.name }}
       {%- endfor %}
     </table>
     <p>
-      <input type=submit value="Update">
-      <a href="{{ url_for('new_event_type') }}">New item</a>
+      <a href="{{ url_for('event_types_new') }}">New item</a>
   </form>
 {% endblock %}
