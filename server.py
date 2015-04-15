@@ -4,11 +4,12 @@
 import ConfigParser
 from datetime import datetime
 from flask import Flask, render_template, flash, request, redirect, url_for, abort
-from wtforms import Form, StringField, SubmitField
+from wtforms import StringField, SubmitField
+from flask.ext.wtf import Form
 #from wtforms.fields.html5 import URLField
-#from wtforms.validators import url
-
-from flask_sqlalchemy import SQLAlchemy
+from wtforms.validators import url, DataRequired
+from flask.ext.sqlalchemy import SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ def get_or_abort(model, object_id, code=404):
 
 
 class CategotyForm(Form):
-    name = StringField('Name')
+    name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Share')
 
 
@@ -122,11 +123,15 @@ def cats_all():
 def cats_new():
     if request.method == 'POST':
         form = CategotyForm()
+
         if form.validate():
             cat = Category()
             form.populate_obj(cat)
             db.session.add(cat)
             db.session.commit()
+        else:
+            pass
+
         return redirect(url_for('cats_all'))
 
 
