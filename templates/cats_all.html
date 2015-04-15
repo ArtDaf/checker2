@@ -3,7 +3,13 @@
 {% block body %}
 <h2>{{mode}} Cats! </h2>
 
-<form method="POST" action="{{url_for('cats_new')}}" class="add-cat">
+{% if new %}
+<form method="POST" action="{{ url_for('cats_new')}}" class="add-cat">
+{% else %}
+<form method="POST" action="" class="add-cat">
+{% endif %}
+
+
 
 
     {{ form.hidden_tag() }}
@@ -21,7 +27,8 @@
 <ul class="cats">
 
 {% for cat in cats %}
-<li> {{ cat.name }}</li>
+
+<li> <a href="/cats/edit/{{cat.id}}"> {{cat.id}}</a> {{ cat.name }}</li>
 {% endfor %}
 </ul>
 

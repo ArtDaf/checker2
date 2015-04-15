@@ -9,7 +9,6 @@ from flask.ext.wtf import Form
 #from wtforms.fields.html5 import URLField
 from wtforms.validators import url, DataRequired
 from flask.ext.sqlalchemy import SQLAlchemy
-#from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
@@ -115,7 +114,7 @@ def index():
 def cats_all():
     cats = Category.query.all()
     form = CategotyForm()
-    return render_template('cats_all.html', cats=cats, form=form)
+    return render_template('cats_all.html', cats=cats, form=form, new=True)
 
 
 
@@ -129,10 +128,24 @@ def cats_new():
             form.populate_obj(cat)
             db.session.add(cat)
             db.session.commit()
+            flash("New category was successfully posted!")
         else:
-            pass
+            flash("Error posting category!")
 
         return redirect(url_for('cats_all'))
+
+
+@app.route('/cats/edit/<int:id>', methods=['POST', 'GET'])
+def cats_edit(id):
+    if request.method == "POST":
+        cat = get_or_abort(Category, id)
+        print cat
+
+    else:
+        cat = get_or_abort(Category, id)
+        form = CategotyForm(obj=cat)
+        return render_template('cats_all.html', form=form)
+
 
 
 
