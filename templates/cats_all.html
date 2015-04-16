@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block body %}
-<h2>{{mode}} Cats! </h2>
+<h6>{% if new %} New {% else %} edit {% endif %} category </h6>
 
 {% if new %}
 <form method="POST" action="{{ url_for('cats_new')}}" class="add-cat">
@@ -9,11 +9,11 @@
 <form method="POST" action="" class="add-cat">
 {% endif %}
     {{ form.hidden_tag() }}
-      <dl>
-          <dt>{{ form.name.label }}:
-          <dd>{{ form.name }}
-        <dd>{{ form.submit }}
-      </dl>
+
+        {{ form.name.label }}:
+        {{ form.name }}
+        {{ form.submit }}
+
 </form>
 
 <ul class="cats">

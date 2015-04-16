@@ -21,9 +21,9 @@ def get_or_abort(model, object_id, code=404):
     return result or abort(code)
 
 
-class CategotyForm(Form):
+class CategoryForm(Form):
     name = StringField('Name', validators=[DataRequired()])
-    submit = SubmitField('Share')
+    submit = SubmitField('Save')
 
 
 class File(db.Model):
@@ -113,15 +113,14 @@ def index():
 @app.route('/cats')
 def cats_all():
     cats = Category.query.all()
-    form = CategotyForm()
+    form = CategoryForm()
     return render_template('cats_all.html', cats=cats, form=form, new=True)
-
 
 
 @app.route('/cats/new', methods=['POST'])
 def cats_new():
     if request.method == 'POST':
-        form = CategotyForm()
+        form = CategoryForm()
 
         if form.validate():
             cat = Category()
@@ -139,7 +138,7 @@ def cats_new():
 def cats_edit(id):
     if request.method == "POST":
         cat = get_or_abort(Category, id)
-        form = CategotyForm(obj=cat)
+        form = CategoryForm(obj=cat)
         if form.validate():
             form.populate_obj(cat)
             db.session.add(cat)
@@ -148,7 +147,7 @@ def cats_edit(id):
 
     else:
         cat = get_or_abort(Category, id)
-        form = CategotyForm(obj=cat)
+        form = CategoryForm(obj=cat)
         return render_template('cats_all.html', form=form)
 
 
