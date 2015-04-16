@@ -139,14 +139,17 @@ def cats_new():
 def cats_edit(id):
     if request.method == "POST":
         cat = get_or_abort(Category, id)
-        print cat
+        form = CategotyForm(obj=cat)
+        if form.validate():
+            form.populate_obj(cat)
+            db.session.add(cat)
+            db.session.commit()
+        return redirect(url_for('cats_all'))
 
     else:
         cat = get_or_abort(Category, id)
         form = CategotyForm(obj=cat)
         return render_template('cats_all.html', form=form)
-
-
 
 
 @app.route('/event-types')

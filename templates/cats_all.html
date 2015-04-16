@@ -8,26 +8,16 @@
 {% else %}
 <form method="POST" action="" class="add-cat">
 {% endif %}
-
-
-
-
     {{ form.hidden_tag() }}
-
-
       <dl>
           <dt>{{ form.name.label }}:
           <dd>{{ form.name }}
-
         <dd>{{ form.submit }}
       </dl>
-
 </form>
 
 <ul class="cats">
-
 {% for cat in cats %}
-
 <li> <a href="/cats/edit/{{cat.id}}"> {{cat.id}}</a> {{ cat.name }}</li>
 {% endfor %}
 </ul>
