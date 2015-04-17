@@ -135,6 +135,31 @@ def files_new():
     return redirect(url_for('files_all'))
 
 
+@app.route('/files/edit/<int:id>', methods=['POST', 'GET'])
+def files_edit(id):
+    if request.method == "POST":
+        file = get_or_abort(File, id)
+        form = FileForm(obj=file)
+        if form.validate():
+            form.populate_obj(file)
+            file.hash = UrlUtils.UrlUtil.get_crc_by_url(form.url.data)
+            if file.hash in [-1, -2, -3]:
+                flash('Hash calculation failed', 'error')
+            else:
+                db.session.add(file)
+                db.session.commit()
+                flash("File was successfully updated!")
+        else:
+            flash('Error updating file!', 'error')
+
+        return redirect(url_for('files_all'))
+
+    else:
+        file = get_or_abort(File, id)
+        form = FileForm(obj=file)
+        return render_template('files_all.html', form=form)
+
+
 @app.route('/categories')
 def cats_all():
     cats = Category.query.all()
