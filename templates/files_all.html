@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h6>{% if new %} New {% else %} edit {% endif %} category </h6>
+
+{% if new %}
+<form method="POST" action="{{ url_for('files_new')}}" class="add-cat">
+{% else %}
+<form method="POST" action="" class="add-cat">
+{% endif %}
+    {{ form.hidden_tag() }}
+
+        {{ form.name.label }}:
+        {{ form.name }}
+        {{ form.url.label }}
+        {{ form.url }}
+        {{ form.submit }}
+
+</form>
+
+<ul class="cats">
+{% for file in files %}
+<li> <a href=""> {{file.id}}</a> {{ file.name }} {{file.url}} {{file.hash}}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

@@ -10,6 +10,8 @@ from wtforms.fields.html5 import URLField
 from wtforms.validators import url, DataRequired
 from flask.ext.sqlalchemy import SQLAlchemy
 
+from checkercore.checker import UrlUtils
+
 
 app = Flask(__name__)
 app.config.from_pyfile('server.cfg')
@@ -26,9 +28,9 @@ class CategoryForm(Form):
     submit = SubmitField('Save')
 
 
-class File(Form):
+class FileForm(Form):
     name = StringField('Name', validators=[DataRequired()])
-    #url = URLField
+    url = URLField("Url", validators=[url()])
     submit = SubmitField('Save')
 
 
@@ -40,15 +42,6 @@ class File(db.Model):
     date = db.Column(db.DateTime)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship('Category', backref=db.backref('files', lazy='dynamic'))
-
-    def __init__(self, name, url, hash, category, date=None):
-        self.name = name
-        self.url = url
-        self.hash = hash
-        if date is None:
-            date = datetime.utcnow()
-        self.category = category
-        self.date = date
 
     def __repr__(self):
         return '<File %d %r>' % (self.id, self._name)
@@ -114,6 +107,32 @@ class Event(db.Model):
 @app.route('/')
 def index():
     return render_template("index.html")
+
+
+@app.route('/files')
+def files_all():
+    files = File.query.all()
+    form = FileForm()
+    return render_template('files_all.html', files=files, form=form, new=True)
+
+
+@app.route('/files/new', methods=['POST'])
+def files_new():
+    if request.method == 'POST':
+        form = FileForm()
+        if form.validate():
+            file = File()
+            form.populate_obj(file)
+            file.hash = UrlUtils.UrlUtil.get_crc_by_url(form.url.data)
+            if file.hash in [-1, -2, -3]:
+                flash('Hash calculation failed', 'error')
+            else:
+                db.session.add(file)
+                db.session.commit()
+                flash('File was successfully posted!')
+        else:
+            flash('Error posting file', 'error')
+    return redirect(url_for('files_all'))
 
 
 @app.route('/categories')
