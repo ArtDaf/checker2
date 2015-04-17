@@ -44,7 +44,7 @@ class File(db.Model):
     category = db.relationship('Category', backref=db.backref('files', lazy='dynamic'))
 
     def __repr__(self):
-        return '<File %d %r>' % (self.id, self._name)
+        return '<File %d %r>' % (self.id, self.name)
 
 
 class Category(db.Model):
