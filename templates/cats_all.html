@@ -18,7 +18,7 @@
 
 <ul class="cats">
 {% for cat in cats %}
-<li> <a href="/cats/edit/{{cat.id}}"> {{cat.id}}</a> {{ cat.name }}</li>
+<li> <a href="{{url_for('cats_edit', id=cat.id)}}"> {{cat.id}}</a> {{ cat.name }}</li>
 {% endfor %}
 </ul>
 

@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import Flask, render_template, flash, request, redirect, url_for, abort
 from wtforms import StringField, SubmitField
 from flask.ext.wtf import Form
-#from wtforms.fields.html5 import URLField
+from wtforms.fields.html5 import URLField
 from wtforms.validators import url, DataRequired
 from flask.ext.sqlalchemy import SQLAlchemy
 
@@ -23,6 +23,12 @@ def get_or_abort(model, object_id, code=404):
 
 class CategoryForm(Form):
     name = StringField('Name', validators=[DataRequired()])
+    submit = SubmitField('Save')
+
+
+class File(Form):
+    name = StringField('Name', validators=[DataRequired()])
+    #url = URLField
     submit = SubmitField('Save')
 
 
@@ -110,14 +116,14 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/cats')
+@app.route('/categories')
 def cats_all():
     cats = Category.query.all()
     form = CategoryForm()
     return render_template('cats_all.html', cats=cats, form=form, new=True)
 
 
-@app.route('/cats/new', methods=['POST'])
+@app.route('/categories/new', methods=['POST'])
 def cats_new():
     if request.method == 'POST':
         form = CategoryForm()
@@ -129,12 +135,12 @@ def cats_new():
             db.session.commit()
             flash("New category was successfully posted!")
         else:
-            flash("Error posting category!")
+            flash("Error posting category!", "error")
 
         return redirect(url_for('cats_all'))
 
 
-@app.route('/cats/edit/<int:id>', methods=['POST', 'GET'])
+@app.route('/categories/edit/<int:id>', methods=['POST', 'GET'])
 def cats_edit(id):
     if request.method == "POST":
         cat = get_or_abort(Category, id)
@@ -143,50 +149,16 @@ def cats_edit(id):
             form.populate_obj(cat)
             db.session.add(cat)
             db.session.commit()
+            flash("Category was successfully updated!")
+        else:
+            flash('Error updating category!', 'error')
+
         return redirect(url_for('cats_all'))
 
     else:
         cat = get_or_abort(Category, id)
         form = CategoryForm(obj=cat)
         return render_template('cats_all.html', form=form)
-
-
-@app.route('/event-types')
-def event_types_all():
-    return render_template('event_types_all.html',
-                           event_types=EventType.query.all())
-
-
-@app.route('/event-types/new', methods=['GET', 'POST'])
-def event_types_new():
-    if request.method == 'POST':
-        if not request.form['name']:
-            flash('Name is required', 'error')
-        else:
-            # TODO: strin tags, etc. || re.sub('<[^<]+?>', '', text)
-            name = request.form['name']
-            event_type = EventType(name)
-            db.session.add(event_type)
-            db.session.commit()
-            flash('New event created')
-            return redirect(url_for('event_types_all'))
-    return render_template('event_types_new.html', mode='New')
-
-
-@app.route('/event-types/edit/<int:evt_id>', methods=['GET', 'POST'])
-def event_types_edit(evt_id):
-    if request.method == 'POST':
-        event_type = get_or_abort(EventType, evt_id)
-        name = request.form['name']
-        event_type.name = name
-        db.session.add(event_type)
-        db.session.commit()
-    else:
-        event_type = get_or_abort(EventType, evt_id)
-        request.form.name = event_type.name
-        return render_template('event_types_new.html', mode="Edit")
-
-    return redirect(url_for('event_types_all'))
 
 
 if __name__ == '__main__':
