@@ -1,9 +1,48 @@
 <!doctype html>
+<head>
 <title>Url Checker</title>
+<!--script src="{{ url_for('static', filename='js/hello.js') }}"></script> -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.min.css" media="screen" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+toastr.options.closeButton = true;
+toastr.options.positionClass = "toast-bottom-right";
+function notification( type, message ) {
+	if( type == 'success' ) {
+		toastr.success(message,'<i>Success</i>');
+	} else if( type == 'error' ) {
+		toastr.error(message,'Error');
+	} else if( type == 'warning' ) {
+		toastr.warning(message,'Warning');
+	} else {
+		toastr.info(message,'Information');
+	}
+}
+</script>
+
+</head>
+
 <h1>Url Checker</h1>
+
+<script>
+
+</script>
+
 {%- for category, message in get_flashed_messages(with_categories=true) %}
-  <p class="flask {{ category }}-flash">{{
-    "Error: " if category == 'error' }}{{ message }}</p>
+  <p class="flask {{ category }}-flash">
+      {% if category == 'error' %}
+        <script>notification('error', ' {{ message }}'); </script>
+      {% else %}
+        <script>notification('success', ' {{ message }}'); </script>
+      {% endif %}
+
+  </p>
+
+
 {%- endfor %}
 {% block body %}{% endblock %}
 <hr>
