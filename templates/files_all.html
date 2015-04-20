@@ -32,7 +32,7 @@
 </form>
 
 {% if not new %} <a href="{{ url_for('files_all') }}"> Back to Files</a> {% endif %}
-{% if new %}
+{% if new and files %}
 <br>
 <div class="table-responsive">
 <table class="files" id="files">
