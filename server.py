@@ -9,6 +9,8 @@ from flask.ext.wtf import Form
 from wtforms.fields.html5 import URLField
 from wtforms.validators import url, DataRequired
 from flask.ext.sqlalchemy import SQLAlchemy
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+
 
 from checkercore.checker import UrlUtils
 
@@ -23,6 +25,10 @@ def get_or_abort(model, object_id, code=404):
     return result or abort(code)
 
 
+def enabled_categories():
+    return Category.query.all()
+
+
 class CategoryForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     submit = SubmitField('Save')
@@ -31,6 +37,7 @@ class CategoryForm(Form):
 class FileForm(Form):
     name = StringField('Name', validators=[DataRequired()])
     url = URLField("Url", validators=[url()])
+    category = QuerySelectField('Category:', query_factory=enabled_categories, allow_blank=True)
     submit = SubmitField('Save')
 
 
@@ -56,7 +63,7 @@ class Category(db.Model):
 
     def __repr__(self):
 
-        return '<Category %r>' % self.name
+        return u'{0}'.format(self.name)
 
 
 class EventType(db.Model):
