@@ -21,10 +21,28 @@
 
 </form>
 {% if not new %} <a href="{{ url_for('files_all') }}"> Back to Files</a> {% endif %}
-<ul class="cats">
-{% for file in files %}
-<li> <a href="{{ url_for('files_edit', id=file.id) }}"> {{file.id}}</a> || {{ file.category}} ||{{ file.name }} {{file.url}} {{file.hash}}</li>
-{% endfor %}
-</ul>
+{% if new %}
+<br>
+<table class="files" id="files">
+ <thead>
+ <tr>
+     <th>Id</th>
+     <th>Category</th>
+     <th>Name</th>
+     <th>Link</th>
+     <th>Hash</th>
+ </tr>
+ </thead>
+<tbody>
+    {% for file in files %}
+        <tr>
+        <td><a href="{{ url_for('files_edit', id=file.id) }}"> {{file.id}}</a></td>  <td>{{ file.category}}</td> <td>{{ file.name }}</td> <td>{{file.url}}</td> <td>{{file.hash}}</td>
+        </tr>
+    {% endfor %}
+<tbody>
+
+</table>
+{% endif %}
+
 
 {% endblock %}

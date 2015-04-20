@@ -6,6 +6,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.tablesorter.min.js') }}"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.min.css" media="screen" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript">
@@ -22,6 +23,13 @@ function notification( type, message ) {
 		toastr.info(message,'Information');
 	}
 }
+</script>
+<script type="text/javascript">
+   $(document).ready(function()
+    {
+        $("#files").tablesorter( {sortList: [[0,0], [1,0]]} );
+    }
+);
 </script>
 
 </head>
