@@ -1,28 +1,40 @@
 {% extends "layout.html" %}
-
 {% block body %}
-<h6>{% if new %} New {% else %} edit {% endif %} category </h6>
 
 {% if new %}
-<form method="POST" action="{{ url_for('files_new')}}" class="add-cat">
+<form method="POST" action="{{ url_for('files_new')}}" class="margin-bottom-40" role="form">
 {% else %}
-<form method="POST" action="" class="add-cat">
+<form method="POST" action="" class="margin-bottom-40" role="form">
 {% endif %}
+    <div class="form-group">
+    <fieldset>
+    <legend> {% if new %} New {% else %} edit {% endif %} file {% if not new %} id={{file.id}} {% endif %} </legend>
     {{ form.hidden_tag() }}
 
-        {{ form.name.label }}:
-        {{ form.name }}
-        {{ form.url.label }}
-        {{ form.url }}
-        {{ form.category.label }}
-        {{ form.category }}
-        {{ form.submit }}
+        <div class="col-xs-3">
+        {{ form.name(class="form-control", placeholder="Enter name") }}
+        </div>
+        <div class="col-xs-4">
+        {{ form.url (class="form-control", placeholder="Enter url")}}
+        </div>
+
+        <div class="col-xs-2">
+        {{ form.category(class="form-control", placeholder="Category")}}
+        </div>
+
+        <div class="col-xs-2">
+             {{ form.submit (class="form-control")}}
+        </div>
 
 
+    </fieldset>
+    </div>
 </form>
+
 {% if not new %} <a href="{{ url_for('files_all') }}"> Back to Files</a> {% endif %}
 {% if new %}
 <br>
+<div class="table-responsive">
 <table class="files" id="files">
  <thead>
  <tr>
@@ -42,6 +54,7 @@
 <tbody>
 
 </table>
+</div>
 {% endif %}
 
 

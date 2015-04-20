@@ -164,7 +164,7 @@ def files_edit(id):
     else:
         file = get_or_abort(File, id)
         form = FileForm(obj=file)
-    return render_template('files_all.html', form=form)
+    return render_template('files_all.html', form=form, file=file)
 
 
 @app.route('/categories')
