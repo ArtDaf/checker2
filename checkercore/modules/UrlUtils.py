@@ -30,8 +30,7 @@ class UrlUtil:
             file = urllib2.urlopen(url, timeout=5)
         except:
             return -2
-        # +TODO: We must generate unique name for each file
-        filename = work_dir + str(uuid.uuid4()) #os.path.basename(path.path)
+        filename = os.path.join(work_dir, str(uuid.uuid4()))  #os.path.basename(path.path)
         try:
             with open(filename, 'wb') as f:
                 rd = file.read()
